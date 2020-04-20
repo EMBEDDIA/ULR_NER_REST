@@ -12,17 +12,16 @@ This repository extends [flask-on-docker](https://github.com/testdrivenio/flask-
 The following command
 
 ```sh
-$ docker-compose up -d --build
+$ docker-compose build
 ```
 
-will build the images and run the containers. If you go to [http://localhost:5000](http://localhost:5000) you will see a web interface where you can check and test your REST API. Flower monitor for Celery is running on [http://localhost:5555](http://localhost:5555). Note that the `web` folder is mounted into the container and the Flask development server reloads your code automatically so any changes will be visible immediately.
-
-#### Production
+will build the images and run the containers.
 
 The following command
 
 ```sh
-$ docker-compose -f docker-compose.prod.yml up -d --build
+$ docker-compose up
 ```
 
-will build the images and run the containers. The web interface is now available at [http://localhost](http://localhost) and the Flower monitor at [http://localhost:5555](http://localhost:5555). If you change the source code, you will have to do a rebuild for changes to take effect.
+If you go to [http://localhost:5000](http://localhost:5000) you will see a web interface where you can check and test your REST API. Flower monitor for Celery is running on [http://localhost:5555](http://localhost:5555). Note that the `web` folder is mounted into the container and the Flask development server reloads your code automatically so any changes will be visible immediately.
+
