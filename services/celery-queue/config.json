@@ -1,0 +1,31 @@
+{
+	"embeddingsScripts" : "./NER/embeddings/",
+	"fasttextPath" : "./NER/embeddings/fastText157/",
+	"komninosPath" : "./NER/embeddings/",
+	"modelBasePath": "./NER/models/zagreb/",
+	"useCuda":true,
+	"languages": 
+				{
+					"et" :  {
+								"fasttextEmbeddings" : true,
+								"bertModel" : "bert-base-multilingual-cased",
+								"modelName" : "282NER_et_0.8651_0.8565_25.h5"
+							},
+					"hr" :  {
+								"fasttextEmbeddings" : true,
+								"bertModel" : "bert-base-multilingual-cased",
+								"modelName" : "282NER_hr_0.8640_0.8573_21.h5"
+							},
+					"ru" :  {
+								"fasttextEmbeddings" : true,
+								"bertModel" : "bert-base-multilingual-cased",
+								"modelName" : "282NER_ru_0.8508_0.8445_20.h5"
+							},
+					"sl" :  {
+								"fasttextEmbeddings" : true,
+								"bertModel" : "bert-base-multilingual-cased",
+								"modelName" : "282NER_sl_0.8947_0.8949_23.h5"
+							}		
+				
+				}
+} 

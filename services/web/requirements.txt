@@ -1,0 +1,9 @@
+Flask==1.1.*
+gunicorn==20.0.*
+celery==4.4.2
+redis
+python-dotenv
+loguru
+flask-restx
+requests
+Flask-Cors==3.0.*
