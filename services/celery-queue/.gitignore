@@ -24,4 +24,7 @@ __pycache__/
 *.py[cod]
 *$py.class
 
+### WGET ###
+wget-log
+
 
