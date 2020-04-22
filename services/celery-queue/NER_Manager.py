@@ -1,7 +1,7 @@
 import json
 
 from celeryApiUtils.synchronization import synchronized_method
-from NER.NER import loadModelsWithConfig
+from NER import loadModelsWithConfig
 
 # Singleton
 class NERManager:

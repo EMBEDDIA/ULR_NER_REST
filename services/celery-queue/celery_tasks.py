@@ -1,6 +1,7 @@
+import sys
 from celery import Celery, states
 
-from NER.NER import getTags, generateDictOutput
+from NER import getTags, generateDictOutput
 from NER_Manager import NERManager
 from celeryApiUtils.processInputText import readText
 
