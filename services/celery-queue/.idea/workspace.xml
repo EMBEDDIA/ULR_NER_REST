@@ -4,28 +4,10 @@
     <list default="true" id="4113ae53-4e4d-4976-8468-1952098d7a7f" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/Dockerfile" beforeDir="false" afterPath="$PROJECT_DIR$/Dockerfile" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/Create_BERT_Cache.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/NER.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/embeddings/fasttext_embeddings.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/embeddings/komninos_embeddings.sh" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/models/zagreb/282NER_et_0.8651_0.8565_25.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/models/zagreb/282NER_hr_0.8640_0.8573_21.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/models/zagreb/282NER_ru_0.8508_0.8445_20.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/models/zagreb/282NER_sl_0.8947_0.8949_23.h5" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/neuralnets/BERTBiLSTM.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/neuralnets/BERTWordEmbeddings.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/neuralnets/keraslayers/ChainCRF.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/neuralnets/keraslayers/WeightedAverage.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/neuralnets/keraslayers/__init__.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/neuralnets/keraslayers/empty" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/util/BIOF1Validation.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/util/CoNLL.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/util/XMLParser.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/util/conllEVAL.py" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/NER/util/preprocessing.py" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/NER_Manager.py" beforeDir="false" afterPath="$PROJECT_DIR$/NER_Manager.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/celeryApiUtils/processInputText.py" beforeDir="false" afterPath="$PROJECT_DIR$/celeryApiUtils/processInputText.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/celeryApiUtils/synchronization.py" beforeDir="false" afterPath="$PROJECT_DIR$/celeryApiUtils/synchronization.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/celery_tasks.py" beforeDir="false" afterPath="$PROJECT_DIR$/celery_tasks.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/entrypoint.sh" beforeDir="false" afterPath="$PROJECT_DIR$/entrypoint.sh" afterDir="false" />
     </list>
     <option name="EXCLUDED_CONVERTED_TO_IGNORED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
