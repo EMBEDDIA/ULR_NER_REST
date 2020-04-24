@@ -23,7 +23,8 @@ WORKDIR /queue
 
 COPY . /queue
 
-RUN apt-get -y upgrade && \
+RUN apt-get -y update && \
+	apt-get -y upgrade && \
 	apt-get -y install g++ unzip && \
 	conda env create -f /tmp/environment.yml && \
 	wget https://github.com/EMBEDDIA/bert-bilstm-cnn-crf-ner/archive/master.zip && \
