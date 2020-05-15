@@ -15,18 +15,28 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-from flask_restx import Api
-from .NER_API import api as ner_api
-from . import flask_app
+FROM continuumio/miniconda3
 
-api = Api(
-          title="NER API",
-          version="0.1",
-          description="API for NER from ULR"
-          )
+ADD environment.yml /tmp/environment.yml
 
-api.add_namespace(ner_api, path="/ner")
+WORKDIR /ner_service
 
-api.init_app(flask_app)
+COPY . /ner_service
 
-flask_app.run(debug=True)
+RUN apt-get -y update && \
+	apt-get -y upgrade && \
+	apt-get -y install g++ unzip && \
+	apt-get -y autoremove && \
+	apt-get -y autoclean && \
+	apt-get clean && \
+	conda env create -f /tmp/environment.yml && \
+	wget https://github.com/EMBEDDIA/bert-bilstm-cnn-crf-ner/archive/master.zip && \
+	unzip master.zip && \
+	rm master.zip && \
+	mv ./bert-bilstm-cnn-crf-ner-master/ ./NER/
+
+ENV	NER_SERVICE_PORT=18861 \
+	C_FORCE_ROOT=true \
+	PYTHONPATH="/ner_service/NER/"
+
+ENTRYPOINT ["/ner_service/entrypoint.sh"]

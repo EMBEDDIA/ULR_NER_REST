@@ -15,26 +15,21 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
-FROM continuumio/miniconda3
+FROM python:3.8.1-slim-buster
 
-ADD environment.yml /tmp/environment.yml
+ADD ./requirements.txt /tmp/requirements.txt
 
 WORKDIR /queue
 
 COPY . /queue
 
-RUN apt-get -y update && \
-	apt-get -y upgrade && \
-	apt-get -y install g++ unzip && \
-	conda env create -f /tmp/environment.yml && \
-	wget https://github.com/EMBEDDIA/bert-bilstm-cnn-crf-ner/archive/master.zip && \
-	unzip master.zip && \
-	mv ./bert-bilstm-cnn-crf-ner-master/ ./NER/ && \
-	rm master.zip
+RUN pip install --upgrade pip && \
+	pip install -r /tmp/requirements.txt
 
 ENV	CELERY_BROKER_URL=redis://redis:6379/0 \
 	CELERY_RESULT_BACKEND=redis://redis:6379/0 \
 	C_FORCE_ROOT=true \
-	PYTHONPATH="/queue/NER/"
+	NER_SERVICE_PORT=18861 \
+	NER_SERVICE_HOST=ner
 
 ENTRYPOINT ["/queue/entrypoint.sh"]

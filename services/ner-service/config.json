@@ -3,8 +3,9 @@
 	"fasttextPath" : "./NER/embeddings/fastText157/",
 	"komninosPath" : "./NER/embeddings/",
 	"modelBasePath": "./NER/models/zagreb/",
-	"useCuda":true,
-	"languages": 
+	"useCuda":false,
+	"loadLanguages": ["hr"],
+	"languagesConfiguration": 
 				{
 					"et" :  {
 								"fasttextEmbeddings" : true,

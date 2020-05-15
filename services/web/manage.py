@@ -25,3 +25,4 @@ cli = FlaskGroup(flask_app)
 
 if __name__ == "__main__":
     cli()
+#flask_app.run(debug=True)

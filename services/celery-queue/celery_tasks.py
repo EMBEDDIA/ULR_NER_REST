@@ -14,48 +14,64 @@
 # NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+import os
+import traceback
 
+import rpyc
 from celery import Celery, states
-from NER import getTags, generateDictOutput
-from NER_Manager import NERManager
-from celeryApiUtils.processInputText import readText
 
+#Loading NER service and models
+ner_port = os.getenv("NER_SERVICE_PORT")
+if ner_port is None:
+    ner_port = 18861
+else:
+    ner_port = int(ner_port)
+    
+ner_host = os.getenv("NER_SERVICE_HOST")
+if ner_host is None:
+    ner_host = "localhost"
+    
+NER_service = rpyc.connect(ner_host, ner_port, config=dict(allow_pickle=True))
+
+asynch_check_status = rpyc.async_(NER_service.root.loadModels)
+print("Waiting while models are being loaded")
+service_status = asynch_check_status()
+service_status.set_expiry(None)
+service_status.wait()
+print(f"Models have been loaded: {NER_service.root.areModelsLoaded()}")
+del asynch_check_status
+del service_status
+
+#Loading Celery
 celery_app = Celery("NER_API", broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
-NER_Manager = NERManager()
 
-
-@celery_app.task()
-def supportedLanguages():
-    return {"languages": list(NER_Manager.getSupportedLanguages())}
+#Creating asynch NER methods
+process_text = rpyc.async_(NER_service.root.createDataset)
+process_ner = rpyc.async_(NER_service.root.processNERRequest)
 
 
 @celery_app.task(bind=True, track_started=True)
 def processNERRequest(task, language, text, input_format):
-    output = {
-                "state": "PROCESSING",
-                "status": "Processing Text"
-             }
-    task.update_state(meta=output)
-    data_set = readText(text, input_format)
-    output = {
-                    "state": "PROCESSING",
-                    "status": "Retrieving model"
-            }
-    task.update_state(meta=output)
     try:
-        model = NER_Manager.getModel(language)
+        output = {
+            "state": "PROCESSING",
+            "status": "Processing Text"
+        }
+        task.update_state(meta=output)
+        request = process_text(text, input_format)
+        request.set_expiry(None)
+        request.wait()
+        data_set = request.value
         output = {
                     "state": "PROCESSING",
                     "status": "Predicting named entities"
                 }
         task.update_state(meta=output)
-        tags = getTags(data_set, model)
-        output = {
-                    "state": "PROCESSING",
-                    "status": "Processing predicted named entities"
-                }
-        task.update_state(meta=output)
-        json_output = generateDictOutput(data_set, tags)
+        #We need to obtain a true dictionary (this is done by dereferening the netref object and asking a local copy)
+        request = process_ner(language, data_set)
+        request.set_expiry(None)
+        request.wait()
+        json_output = rpyc.classic.obtain(request.value)
         output = {
                     "state": "SUCCESS",
                     "status": "Task completed",
@@ -63,10 +79,10 @@ def processNERRequest(task, language, text, input_format):
                  }
         task.update_state(state=states.SUCCESS)
     except Exception:
+        traceback.print_exc()
         output = {
                     "state": "FAILURE",
-                    "status": "Model not found",
-                    "language": language
+                    "error": traceback.format_exc()
                  }
         task.update_state(meta=output)
     return output

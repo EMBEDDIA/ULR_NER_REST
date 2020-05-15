@@ -5,21 +5,21 @@ FROM python:3.8.1-slim-buster
 WORKDIR /usr/src/app
 
 # set environment variables
-ENV PYTHONDONTWRITEBYTECODE 1
-ENV PYTHONUNBUFFERED 1
+ENV PYTHONDONTWRITEBYTECODE=1 \
+	PYTHONUNBUFFERED=1 \
+	NER_SERVICE_PORT=18861 \
+	NER_SERVICE_HOST=ner
+
+#Copy requirements and project
+COPY ./requirements.txt /usr/src/app/requirements.txt
+
+COPY . /usr/src/app/
 
 # install system dependencies
-RUN apt-get update && apt-get install -y netcat
-#git
-
-# install dependencies
-RUN pip install --upgrade pip
-COPY ./requirements.txt /usr/src/app/requirements.txt
-RUN pip install -r requirements.txt
-#RUN --mount=type=cache,target=/root/.cache/pip pip install -r requirements.txt
-
-# copy project
-COPY . /usr/src/app/
+RUN apt-get update && \
+	apt-get install -y netcat && \
+	pip install --upgrade pip && \
+	pip install -r requirements.txt
 
 # run entrypoint.sh
 ENTRYPOINT ["/usr/src/app/entrypoint.sh"]

@@ -15,13 +15,37 @@
 # DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
+import os
+import traceback
+
+import rpyc
 from celery import Celery
 from flask import request
 from flask_restx import Resource, reqparse, fields, Namespace
 
 from .apiUtils.responses import createErrorResponse, createIdResponse, createGenericResponse, createOptionsResponse, createDocumentationResponse
-from .apiUtils.synchronization import synchronized_function
 
+#Loading NER service and models
+ner_port = os.getenv("NER_SERVICE_PORT")
+if ner_port is None:
+    ner_port = 18861
+else:
+    ner_port = int(ner_port)
+    
+ner_host = os.getenv("NER_SERVICE_HOST")
+if ner_host is None:
+    ner_host = "localhost"
+    
+NER_service = rpyc.connect(ner_host, ner_port, config=dict(allow_pickle=True))
+
+asynch_check_status = rpyc.async_(NER_service.root.loadModels)
+print("Waiting while models are being loaded")
+service_status = asynch_check_status()
+service_status.set_expiry(None)
+service_status.wait()
+print(f"Models have been loaded: {NER_service.root.areModelsLoaded()}")
+
+# We can't start the API until the models have been loaded
 # API description
 api = Namespace('ner', description='NER related operations')
 celery_app = Celery("NER_API", broker='redis://localhost:6379/0', backend='redis://localhost:6379/0')
@@ -37,24 +61,9 @@ class documentation(Resource):
 @api.route('/supportedLanguages')
 class SupportedLanguages(Resource):
 
-    __supported_languages = None
-
-    #Lazy singleton
-    @staticmethod
-    @synchronized_function
-    def __retrieveSupportedLanguages():
-        if SupportedLanguages.__supported_languages is None:
-            task = celery_app.send_task("celery_tasks.supportedLanguages")
-            response = celery_app.AsyncResult(task.id)
-            while response.state != "SUCCESS":
-                response = celery_app.AsyncResult(task.id)
-            SupportedLanguages.__supported_languages = response.info["languages"]
-
     @staticmethod
     def getSupportedLanguages():
-        if SupportedLanguages.__supported_languages is None:
-            SupportedLanguages.__retrieveSupportedLanguages()
-        return SupportedLanguages.__supported_languages
+        return NER_service.root.getSupportedLanguages()
 
     def get(self):
         supported = {"languages": SupportedLanguages.getSupportedLanguages()}
@@ -64,7 +73,7 @@ class SupportedLanguages(Resource):
         return createOptionsResponse(self)
 
 
-@api.route('/predict/retrievePredictions/<string:task_id>')
+@api.route('/async/retrievePredictions/<string:task_id>')
 class predictNER(Resource):
 
     def get(self, task_id):
@@ -82,6 +91,7 @@ class predictNER(Resource):
             for field in task.info:
                 response[field] = task.info[field]
         else:
+            print(task.state)
             response = {}
             for field in task.info:
                 response[field] = task.info[field]
@@ -92,7 +102,7 @@ class predictNER(Resource):
         return createOptionsResponse(self)
 
 
-@api.route('/predict/rawText/<string:language>/')
+@api.route('/predictRawText/<string:language>/')
 class nerRaw(Resource):
 
     @api.doc(params={
@@ -105,23 +115,62 @@ class nerRaw(Resource):
         args = parser.parse_args()
         if language in SupportedLanguages.getSupportedLanguages():
             if args["text"] is not None and args["text"] != "":
-                task = celery_app.send_task("celery_tasks.processNERRequest", args=[language, args["text"], "plain"])
-                return createIdResponse(task.id, language)
-            return createErrorResponse("Empty text", 400)
-        return createErrorResponse("Unsupported language", 400)
+                try:
+                    data_set = NER_service.root.createDataset(args["text"], "plain")
+                    json_output = rpyc.classic.obtain(NER_service.root.processNERRequest(language, data_set))
+                    response = {
+                        "result": json_output
+                    }
+                    return createGenericResponse(response, 200)
+                except Exception as e:
+                    return createErrorResponse(traceback.format_exc(), 400)
+            else:
+                return createErrorResponse("Empty text", 400)
+        else:
+            return createErrorResponse("Unsupported language", 400)
 
     def options(self, language):
         return createOptionsResponse(self)
 
 
-@api.route('/predict/sentences/<string:language>/')
-class nerSentences(Resource):
+@api.route('/predictSentences/<string:language>/')
+class nerRaw(Resource):
 
-    resource_input = api.model('Resource', {
+    sentences_input = api.model('Sentences_Input', {
         'sentences': fields.List(fields.String),
     })
 
-    @api.expect(resource_input)
+    @api.expect(sentences_input)
+    def post(self, language):
+        sentences = request.json["sentences"]
+        if language in SupportedLanguages.getSupportedLanguages():
+            if sentences is not None and len(sentences) > 0:
+                try:
+                    data_set = NER_service.root.createDataset(sentences, "sentences")
+                    json_output = rpyc.classic.obtain(NER_service.root.processNERRequest(language, data_set))
+                    response = {
+                        "result": json_output
+                    }
+                    return createGenericResponse(response, 200)
+                except Exception as e:
+                    return createErrorResponse(traceback.format_exc(), 400)
+            else:
+                return createErrorResponse("Empty sentences", 400)
+        else:
+            return createErrorResponse("Unsupported language", 400)
+
+    def options(self, language):
+        return createOptionsResponse(self)
+
+
+@api.route('/async/predictSentences/<string:language>/')
+class nerSentences(Resource):
+
+    sentences_input = api.model('Sentences_Input', {
+        'sentences': fields.List(fields.String),
+    })
+
+    @api.expect(sentences_input)
     def post(self, language):
         sentences = request.json["sentences"]
         if language in SupportedLanguages.getSupportedLanguages():
@@ -135,14 +184,44 @@ class nerSentences(Resource):
         return createOptionsResponse(self)
 
 
-@api.route('/predict/tokens/<language>/')
+@api.route('/predictTokens/<language>/')
 class nerTokens(Resource):
 
-    resource_input = api.model('Resource', {
-        'sentences': fields.List(fields.List(fields.String)),
+    tokens_input = api.model('Tokens_Input', {
+        'tokenized_sentences': fields.List(fields.List(fields.String)),
     })
 
-    @api.expect(resource_input)
+    @api.expect(tokens_input)
+    def post(self, language):
+        sentences = request.json["tokenized_sentences"]
+        if language in SupportedLanguages.getSupportedLanguages():
+            if sentences is not None and len(sentences) > 0:
+                try:
+                    data_set = NER_service.root.createDataset(sentences, "tokens")
+                    json_output = rpyc.classic.obtain(NER_service.root.processNERRequest(language, data_set))
+                    response = {
+                        "result": json_output
+                    }
+                    return createGenericResponse(response, 200)
+                except Exception as e:
+                    return createErrorResponse(traceback.format_exc(), 400)
+            else:
+                return createErrorResponse("Empty sentences", 400)
+        else:
+            return createErrorResponse("Unsupported language", 400)
+
+    def options(self, language):
+        return createOptionsResponse(self)
+
+
+@api.route('/async/predictTokens/<language>/')
+class nerTokens(Resource):
+
+    tokens_input = api.model('Tokens_Input', {
+        'tokenized_sentences': fields.List(fields.List(fields.String)),
+    })
+
+    @api.expect(tokens_input)
     def post(self, language):
         sentences = request.json["sentences"]
         if language in SupportedLanguages.getSupportedLanguages():
