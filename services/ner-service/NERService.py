@@ -1,5 +1,5 @@
 # Embeddia Project - Named Entity Recognition
-# Copyright © 2020 Luis Adrián Cabrera Diego - La Rochelle Université
+# Copyright © 2020-2021 Luis Adrián Cabrera Diego - La Rochelle Université
 # Permission is hereby granted, free of charge, to any person obtaining a copy of this
 # software and associated documentation files (the "Software"), to deal in the Software
 # without restriction, including without limitation the rights to use, copy, modify, merge,
