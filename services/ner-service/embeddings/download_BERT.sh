@@ -76,13 +76,13 @@ then
 	
 	FILE="$DIR/vocab.txt"
 	MESSAGE="Downloading vocab"
-	wget -N https://huggingface.co/bert-base-multilingual-cased/resolve/main/vocab.txt --directory-prefix=$DIR
+	wget -c -N https://huggingface.co/bert-base-multilingual-cased/resolve/main/vocab.txt --directory-prefix=$DIR
 	
 	FILE="$DIR/config.json"
 	MESSAGE="Downloading config"
-	wget -N https://huggingface.co/bert-base-multilingual-cased/resolve/main/config.json --directory-prefix=$DIR
+	wget -c -N https://huggingface.co/bert-base-multilingual-cased/resolve/main/config.json --directory-prefix=$DIR
 	
 	FILE="$DIR/pytorch_model.bin"
 	MESSAGE="Downloading bin"
-	wget -N https://huggingface.co/bert-base-multilingual-cased/resolve/main/pytorch_model.bin --directory-prefix=$DIR
+	wget -c -N https://huggingface.co/bert-base-multilingual-cased/resolve/main/pytorch_model.bin --directory-prefix=$DIR
 fi

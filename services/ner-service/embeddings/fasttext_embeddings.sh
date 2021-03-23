@@ -84,7 +84,7 @@ then
 	FILE="$DIR/cc.$LANGUAGE.300.bin.gz"
 	MESSAGE="Downloading embeddings"
 	echo $MESSAGE
-	wget -r -N -c https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.$LANGUAGE.300.bin.gz --directory-prefix=$DIR
+	wget -N -c https://dl.fbaipublicfiles.com/fasttext/vectors-crawl/cc.$LANGUAGE.300.bin.gz --directory-prefix=$DIR
 
 	FILE="$DIR/cc.$LANGUAGE.300.vec.gz.top1.bin"
 	MESSAGE="Unzipping embeddings"
