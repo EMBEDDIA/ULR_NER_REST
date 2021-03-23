@@ -18,6 +18,8 @@
 import json
 import os
 import traceback
+import subprocess
+
 
 import rpyc
 
@@ -42,12 +44,21 @@ class NERService(rpyc.Service):
             self.__languages_configuration = None
             self.__tf_graph = None
             self.__models_loaded = False
-
             self.__loadConfiguration()
+            
+        def __downloadEmbeddings(self):
+            print(f"Downloading bert model")
+            subprocess.run([f"{self.__global_configuration['embeddingsScripts']}/download_BERT.sh"], check=True)
+            print(self.__supported_languages)
+            for language in self.__supported_languages:
+                print(f"Downloading embeddings for {language}")
+                subprocess.run([f"{self.__global_configuration['embeddingsScripts']}/fasttext_embeddings.sh", language, self.__languages_configuration[language]["fastTextSha"], f"Getting embeddings for {language}"], check=True)
 
         @synchronized_method
         def loadModels(self):
             if not self.__models_loaded:
+                #We need to download here the embeddings, because we need the object running as fast as possible
+                self.__downloadEmbeddings()
                 self.__loadModels()
                 print("Models have been loaded")
             else:
@@ -95,6 +106,7 @@ class NERService(rpyc.Service):
 
         def __loadModels(self):
             self.setTFGraph()
+            print("Loading models")
             for language in self.__supported_languages:
                 if language not in self.__loaded_models:
                     try:
