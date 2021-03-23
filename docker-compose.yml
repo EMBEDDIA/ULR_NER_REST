@@ -8,7 +8,7 @@ services:
     env_file:
       - ./.env.dev
     volumes:
-      - ner-data:/data
+      - ./services/ner-service:/data
     expose:
       - "18861"
   web:
@@ -45,6 +45,5 @@ services:
       - redis-data:/data
 
 volumes:
-  ner-data:
   redis-data:
   celery-flower_data:
