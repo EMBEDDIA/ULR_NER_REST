@@ -1,6 +1,16 @@
 version: '3.7'
 
 services:
+  ner:
+    build:
+        context: ./services/ner-service
+        dockerfile: Dockerfile
+    env_file:
+      - ./.env.dev
+    volumes:
+      - ner-data:/data
+    expose:
+      - "18861"
   web:
     build:
       context: ./services/web
@@ -15,6 +25,7 @@ services:
       - ./.env.prod
     depends_on:
       - redis
+      - ner
   nginx:
     build: ./services/nginx
     volumes:
@@ -44,6 +55,7 @@ services:
 
 
 volumes:
+  ner-data:
   static_volume:
   media_volume:
   redis-data:
