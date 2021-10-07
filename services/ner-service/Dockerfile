@@ -23,7 +23,7 @@ WORKDIR /ner_service
 
 COPY . /ner_service
 
-RUN apt-get -y update && \
+RUN apt-get --allow-releaseinfo-change -y update && \
 	apt-get -y upgrade && \
 	apt-get -y install g++ unzip && \
 	apt-get -y autoremove && \
