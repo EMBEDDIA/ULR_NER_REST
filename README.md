@@ -1,3 +1,7 @@
+# API for NER system based on a BiLSTM-CNN-CRF with BERT
+
+This repository provides an API access to the models trained with a (BiLSTM-CNN-CRF and BERT)[https://github.com/EMBEDDIA/bert-bilstm-cnn-crf-ner].
+
 ## Flask REST API skeleton with dockerized Flask + flask_restx, Gunicorn, Nginx, Celery, Flower and Redis
 
 This repository is based on [flask-rest-docker](https://github.com/EMBEDDIA/flask-rest-docker) which in turn extends [flask-on-docker](https://github.com/testdrivenio/flask-on-docker) with Celery, Redis and Flask_restx to provide a skeleton for building dockerized Flask RESTful APIs. This version includes a container (`ner-service`) which make use of miniconda to facilitate the import of requirements. 
@@ -35,4 +39,28 @@ This work has been attributed an MIT License and makes use of portions of code f
 - [flask-rest-docker](https://github.com/EMBEDDIA/flask-rest-docker): MIT License
 - [flask-on-docker](https://github.com/testdrivenio/flask-on-docker): MIT License
 
+## How to cite?
+
+```
+@inproceedings{moreno-etal-2019-tlr,
+    title = "{TLR} at {BSNLP}2019: A Multilingual Named Entity Recognition System",
+    author = "Moreno, Jose G.  and
+      Linhares Pontes, Elvys  and
+      Coustaty, Mickael  and
+      Doucet, Antoine",
+    booktitle = "Proceedings of the 7th Workshop on Balto-Slavic Natural Language Processing",
+    month = aug,
+    year = "2019",
+    address = "Florence, Italy",
+    publisher = "Association for Computational Linguistics",
+    url = "https://aclanthology.org/W19-3711",
+    doi = "10.18653/v1/W19-3711",
+    pages = "83--88"
+}
+
+```
+
+# Parent project
+
+This work is is result of the European Union H2020 Project [Embeddia](http://embeddia.eu/). Embeddia is a project that creates NLP tools that focuses on European under-represented languages and that has for objective to improve the accessibility of these tools to the general public and to media enterprises. Visit [Embeddia's Github](https://github.com/orgs/EMBEDDIA/) to discover more NLP tools and models created within this project.
 
