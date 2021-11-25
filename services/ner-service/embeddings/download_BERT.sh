@@ -18,14 +18,14 @@
 # OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
 
 
-DIR=$(dirname $0)
+DIR=/ner_service/data/embeddings
 
 DIR="$DIR/bert-base-multilingual-cased"
 
 if [[ ! -d "$DIR" ]]
 then
 	echo "Creating directory"
-    mkdir $DIR
+    mkdir -p $DIR
     if [ $? -ne 0 ]; then { echo "Failed, aborting." ; exit 1; } fi
 fi
 
