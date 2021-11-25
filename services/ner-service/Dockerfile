@@ -17,19 +17,18 @@
 
 FROM continuumio/miniconda3
 
-ADD environment.yml /tmp/environment.yml
-
-WORKDIR /ner_service
-
-COPY . /ner_service
-
 RUN apt-get --allow-releaseinfo-change -y update && \
 	apt-get -y upgrade && \
 	apt-get -y install g++ unzip && \
 	apt-get -y autoremove && \
 	apt-get -y autoclean && \
-	apt-get clean && \
-	conda env create -f /tmp/environment.yml && \
+	apt-get clean
+
+ADD environment.yml /tmp/environment.yml
+WORKDIR /ner_service
+COPY . /ner_service
+
+RUN	conda env create -f /tmp/environment.yml && \
 	wget https://github.com/EMBEDDIA/bert-bilstm-cnn-crf-ner/archive/master.zip && \
 	unzip master.zip && \
 	rm master.zip && \
