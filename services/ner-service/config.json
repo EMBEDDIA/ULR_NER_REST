@@ -2,7 +2,7 @@
 	"embeddingsScripts" : "/ner_service/embeddings/",
 	"fasttextPath" : "/ner_service/data/embeddings/fastText157/",
 	"komninosPath" : "",
-	"modelBasePath": "/ner_service/data/NER/models/zagreb/",
+	"modelBasePath": "/ner_service/NER/models/zagreb/",
 	"useCuda":false,
 	"loadLanguages": ["hr", "et", "ru", "sl"],
 	"languagesConfiguration": 
