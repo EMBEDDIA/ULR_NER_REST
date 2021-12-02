@@ -22,14 +22,14 @@ LANGUAGE=$1
 SHA_EMBEDDINGS=$2
 echo $3
 
-DIR=/ner_service/data/embeddings
+DIR=`dirname $0`
 
 DIR=$DIR/fastText157
 
 if [[ ! -d "$DIR" ]]
 then
 	echo "Creating directory"
-    mkdir -p $DIR
+    mkdir $DIR
     if [ $? -ne 0 ]; then { echo "Failed, aborting." ; exit 1; } fi
 fi
 
