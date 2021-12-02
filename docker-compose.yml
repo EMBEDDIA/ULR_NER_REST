@@ -8,7 +8,7 @@ services:
     env_file:
       - ./.env.dev
     volumes:
-      - ./services/ner-service:/data
+      - ./data/ner-service:/ner_service/data
     expose:
       - "18861"
   web:
@@ -17,7 +17,7 @@ services:
         dockerfile: Dockerfile
     command: python manage.py run -h 0.0.0.0
     volumes:
-      - ./services/web/:/usr/src/app/
+      - ./data/web/:/usr/src/app/
     ports:
       - 5000:5000
     env_file:
@@ -34,7 +34,7 @@ services:
     ports:
      - "5555:5555"
     volumes:
-      - celery-flower_data:/persistent
+      - ./data/celery-flower:/persistent
     depends_on:
       - ner
       - redis

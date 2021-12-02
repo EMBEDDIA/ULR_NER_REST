@@ -1,6 +1,6 @@
 {
 	"embeddingsScripts" : "/ner_service/embeddings/",
-	"fasttextPath" : "/ner_service/embeddings/fastText157/",
+	"fasttextPath" : "/ner_service/data/embeddings/fastText157/",
 	"komninosPath" : "",
 	"modelBasePath": "/ner_service/NER/models/zagreb/",
 	"useCuda":false,
@@ -9,28 +9,28 @@
 				{
 					"et" :  {
 								"fasttextEmbeddings" : true,
-								"bertModel" : "/ner_service/embeddings/bert-base-multilingual-cased",
+								"bertModel" : "/ner_service/data/embeddings/bert-base-multilingual-cased",
 								"modelName" : "282NER_et_0.8651_0.8565_25.h5",
 								"fastTextSha":"97b1635f281b57ab47766d34c313d97116a44de7c16dea3b980e5f38da5ebe7d531a6bf23d3b7d07d7859b69648bf22a2bf2955c69c5ae7b5b5678b24c80c1e3"
 							},
 					"hr" :  {
 								"fasttextEmbeddings" : true,
-								"bertModel" : "/ner_service//embeddings/bert-base-multilingual-cased",
+								"bertModel" : "/ner_service/data/embeddings/bert-base-multilingual-cased",
 								"modelName" : "282NER_hr_0.8640_0.8573_21.h5",
 								"fastTextSha": "d20bbc0bc8d3a0a1f57150c79999cdd59889af7c836a405a315832e99fcbbf2824c4c7b37f57ef3e99e688113d788a4a4173c7eeacbf9c64071d35c6176fd203"
 							},
 					"ru" :  {
 								"fasttextEmbeddings" : true,
-								"bertModel" : "/ner_service//embeddings/bert-base-multilingual-cased",
+								"bertModel" : "/ner_service/data/embeddings/bert-base-multilingual-cased",
 								"modelName" : "282NER_ru_0.8508_0.8445_20.h5",
 								"fastTextSha":"ca9bfc282a3d9ca04f455399133ebaa3ffd10e9e5fe485693d910094769cd73674a60d787e9b57ca9f2e658783aafe763d83fa0de8dbddae4f26dbab948b615a"
 							},
 					"sl" :  {
 								"fasttextEmbeddings" : true,
-								"bertModel" : "/ner_service//embeddings/bert-base-multilingual-cased",
+								"bertModel" : "/ner_service/data/embeddings/bert-base-multilingual-cased",
 								"modelName" : "282NER_sl_0.8947_0.8949_23.h5",
 								"fastTextSha": "6dea32459be49339796847dd7c239bf5fabe4b57509ac02019cd4d3d22169c6ed2b0389230ea2eaefefa569d677f8028073c5ad2a68368e4e1b665e5682492c9"
 							}		
 				
 				}
-} 
+}
